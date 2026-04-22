@@ -16,7 +16,6 @@ st.sidebar.divider()
 st.sidebar.markdown("**Contact & Links**")
 st.sidebar.markdown("[LinkedIn](https://linkedin.com/in/alexchrys99) | [GitHub](https://github.com/alexchrys99)")
 st.sidebar.markdown("📍 Athens, Greece")
-st.sidebar.markdown("📍 Athens, Greece")
 
 # --- CV DOWNLOAD BUTTON ---
 st.sidebar.divider()
@@ -32,7 +31,7 @@ try:
 except FileNotFoundError:
     st.sidebar.warning("CV file not found. Please upload it to the repo.")
 
-    
+
 # --- PAGE 1: HOME / RESUME ---
 if page == "🏠 Executive Summary":
     st.title("Hi, I'm Alexandros 👋")
