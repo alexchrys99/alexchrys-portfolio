@@ -16,7 +16,23 @@ st.sidebar.divider()
 st.sidebar.markdown("**Contact & Links**")
 st.sidebar.markdown("[LinkedIn](https://linkedin.com/in/alexchrys99) | [GitHub](https://github.com/alexchrys99)")
 st.sidebar.markdown("📍 Athens, Greece")
+st.sidebar.markdown("📍 Athens, Greece")
 
+# --- CV DOWNLOAD BUTTON ---
+st.sidebar.divider()
+try:
+    with open("CV_Alexandros_Chrysogelos.pdf", "rb") as pdf_file:
+        pdf_bytes = pdf_file.read()
+    st.sidebar.download_button(
+        label="📄 Download Full CV",
+        data=pdf_bytes,
+        file_name="CV_Alexandros_Chrysogelos.pdf",
+        mime="application/pdf"
+    )
+except FileNotFoundError:
+    st.sidebar.warning("CV file not found. Please upload it to the repo.")
+
+    
 # --- PAGE 1: HOME / RESUME ---
 if page == "🏠 Executive Summary":
     st.title("Hi, I'm Alexandros 👋")
