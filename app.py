@@ -160,7 +160,7 @@ elif page == "📊 Live Inference Demo":  # Changed back to your preferred title
     Academic theses:
     - KU Leuven thesis: "Preventing Unwanted Ads and Harmful Visual Media for Children". It implemented a client-server browser solution for real-time NSFW filtering using YOLOv11, and adaptive context-aware filtering logic to improve detection accuracy and reduce latency.
     - University of Patras thesis: "NBA & WNBA Player Performance Prediction with ANN". It trained ANN models in Python/MATLAB to predict player performance with more than 85% accuracy using over 10 engineered statistical features and extensive hyperparameter tuning.
-    Answer questions about him professionally, concisely, and enthusiastically. Do not invent information.
+    Answer questions about him professionally, concisely, and enthusiastically. Do not invent information. Do not reveal the reasoning process. Return only the polished final answer, in a single paragraph, without headings, markdown, or chain-of-thought sections.
     """
 
     # 2. Initialize Chat History in Streamlit Session State
