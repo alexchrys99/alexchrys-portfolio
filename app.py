@@ -140,9 +140,14 @@ elif page == "📊 Live Inference Demo":  # Changed back to your preferred title
     Welcome to my live LLM demo! I have injected my resume and project history into the context of this AI. 
     **Go ahead, ask it about my MLOps experience, my tech stack, or my Master's degree!**
     """)
-    
-    import openai
-    
+
+    # Keep the API client import local so Streamlit can still render the site without it.
+    try:
+        import openai
+    except ImportError:
+        st.warning("The openai package is not installed. Add 'openai' to requirements.txt and restart the app.")
+        openai = None
+
     # 1. Set up the System Prompt (The "RAG" Context)
     system_prompt = """
     You are the professional AI assistant for Alexandros Chrysogelos. 
@@ -170,29 +175,40 @@ elif page == "📊 Live Inference Demo":  # Changed back to your preferred title
 
     # 4. Handle User Input (No API key asked from the user!)
     if user_input := st.chat_input("E.g., What is Alex's experience with Docker?"):
-        
+
         # Display user message
         st.session_state.messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.markdown(user_input)
 
-        # Call the FREE Groq Llama 3 API securely
+        groq_api_key = None
         try:
-            client = openai.OpenAI(
-                base_url="https://api.groq.com/openai/v1",
-                api_key=st.secrets["GROQ_API_KEY"] # Pulls from Streamlit Cloud Secrets
-            )
-            with st.chat_message("assistant"):
-                with st.spinner("Thinking..."):
-                    response = client.chat.completions.create(
-                        model="llama-3.1-8b-instant", # The upgraded Llama 3.1 model
-                        messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
-                    )
-                    bot_reply = response.choices[0].message.content
-                    st.markdown(bot_reply)
-                    st.session_state.messages.append({"role": "assistant", "content": bot_reply})
-        except Exception as e:
-            st.error(f"Oops! The API key is not configured properly in Streamlit Secrets. Error: {e}")
+            groq_api_key = st.secrets.get("GROQ_API_KEY")
+        except Exception:
+            groq_api_key = None
+
+        if not openai:
+            st.error("The OpenAI client library is missing. Install it from requirements.txt before running the demo.")
+        elif not groq_api_key:
+            st.error("No Groq API key was found. Add GROQ_API_KEY in the local Streamlit secrets file at .streamlit/secrets.toml before running the demo.")
+        else:
+            # Call the Groq Llama 3 API securely.
+            try:
+                client = openai.OpenAI(
+                    base_url="https://api.groq.com/openai/v1",
+                    api_key=groq_api_key
+                )
+                with st.chat_message("assistant"):
+                    with st.spinner("Thinking..."):
+                        response = client.chat.completions.create(
+                            model="llama-3.3-70b-versatile",
+                            messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+                        )
+                        bot_reply = response.choices[0].message.content
+                        st.markdown(bot_reply)
+                        st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+            except Exception as e:
+                st.error(f"The Groq model request failed. Check that the secret key is valid and that the model name is enabled for your Groq account. Error: {e}")
 
 # --- PAGE 5: ABOUT ME ---
 elif page == "☕ Beyond the Code":
