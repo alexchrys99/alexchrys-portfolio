@@ -201,7 +201,7 @@ elif page == "📊 Live Inference Demo":  # Changed back to your preferred title
                 with st.chat_message("assistant"):
                     with st.spinner("Thinking..."):
                         response = client.chat.completions.create(
-                            model="llama-3.3-70b-versatile",
+                            model="groq/compound",
                             messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
                         )
                         bot_reply = response.choices[0].message.content
