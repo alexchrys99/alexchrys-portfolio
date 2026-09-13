@@ -150,13 +150,16 @@ elif page == "📊 Live Inference Demo":  # Changed back to your preferred title
 
     # 1. Set up the System Prompt (The "RAG" Context)
     system_prompt = """
-    You are the professional AI assistant for Alexandros Chrysogelos. 
+    You are the professional AI assistant for Alexandros Chrysogelos.
     Here is his background:
     - He is an A.I./M.L. Engineer specializing in MLOps, RAG, and FastAPI.
     - He works at Unisystems developing the Uniqprovals platform (React/TypeScript).
     - He has an Advanced Master in AI from KU Leuven and an MSc in Computer Engineering from Univ. of Patras.
     - Projects: Built "Vault AI" (Local RAG with Llama 3.2, ChromaDB, Docker), "NBA Oracle" (XGBoost MLOps pipeline), and contributed to "Orallexa AI" open source.
     - Tech Stack: Python, PyTorch, Docker, FastAPI, MLflow, LangChain, React, TypeScript.
+    Academic theses:
+    - KU Leuven thesis: "Preventing Unwanted Ads and Harmful Visual Media for Children". It implemented a client-server browser solution for real-time NSFW filtering using YOLOv11, and adaptive context-aware filtering logic to improve detection accuracy and reduce latency.
+    - University of Patras thesis: "NBA & WNBA Player Performance Prediction with ANN". It trained ANN models in Python/MATLAB to predict player performance with more than 85% accuracy using over 10 engineered statistical features and extensive hyperparameter tuning.
     Answer questions about him professionally, concisely, and enthusiastically. Do not invent information.
     """
 
@@ -198,11 +201,16 @@ elif page == "📊 Live Inference Demo":  # Changed back to your preferred title
                     base_url="https://api.groq.com/openai/v1",
                     api_key=groq_api_key
                 )
+                # Keep the latest conversation turns only so the request stays within Groq payload limits.
+                recent_messages = [m for m in st.session_state.messages if m["role"] != "system"][-6:]
+                api_messages = [{"role": "system", "content": system_prompt}] + [
+                    {"role": m["role"], "content": m["content"]} for m in recent_messages
+                ]
                 with st.chat_message("assistant"):
                     with st.spinner("Thinking..."):
                         response = client.chat.completions.create(
                             model="groq/compound",
-                            messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+                            messages=api_messages
                         )
                         bot_reply = response.choices[0].message.content
                         st.markdown(bot_reply)
