@@ -1,0 +1,6 @@
+# Local Python cache artifacts
+__pycache__/
+*.py[cod]
+
+# Streamlit local secrets must not be committed
+.streamlit/
